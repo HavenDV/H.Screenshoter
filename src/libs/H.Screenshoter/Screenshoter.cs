@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using H.Utilities.Extensions;
@@ -16,47 +15,6 @@ namespace H.Utilities
     /// </summary>
     public static class Screenshoter
     {
-        #region PInvokes
-
-        [DllImport("user32", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern bool EnumDisplayMonitors(
-            nint hdc,
-            nint lpRect, 
-            MonitorEnumProc callback,
-            nint dwData);
-        
-        private delegate bool MonitorEnumProc(
-            nint hDesktop,
-            nint hdc, 
-            ref RECT pRect,
-            nint dwData);
-
-        [DllImport("user32", CharSet = CharSet.Auto, SetLastError = true)]
-        internal static extern bool GetMonitorInfo(
-            nint hMonitor, 
-            ref MonitorInfoEx info);
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto, Pack = 4)]
-        internal struct MonitorInfoEx
-        {
-            public uint cbSize;
-            public RECT rcMonitor;
-            public RECT rcWork;
-            public uint dwFlags;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
-            public char[] szDevice;
-
-            public static MonitorInfoEx Create()
-            {
-                return new()
-                {
-                    cbSize = (uint) Marshal.SizeOf(typeof(MonitorInfoEx)),
-                };
-            }
-        }
-
-        #endregion
-
         #region Public methods
 
         /// <summary>
@@ -69,8 +27,8 @@ namespace H.Utilities
             var list = new List<Rectangle>();
             bool Callback(nint hDesktop, nint hdc, ref RECT rect, nint dwData)
             {
-                var info = MonitorInfoEx.Create();
-                GetMonitorInfo(hDesktop, ref info).Check();
+                var info = Interop.User32.MonitorInfoEx.Create();
+                Interop.User32.GetMonitorInfo(hDesktop, ref info).Check();
 
                 var settings = DEVMODE.Create();
                 User32.EnumDisplaySettings(
@@ -88,7 +46,7 @@ namespace H.Utilities
                 return true;
             }
 
-            EnumDisplayMonitors(0, 0, Callback, 0).Check();
+            Interop.User32.EnumDisplayMonitors(0, 0, Callback, 0).Check();
 
             return list;
         }
