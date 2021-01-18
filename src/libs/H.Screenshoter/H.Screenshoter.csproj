@@ -1,14 +1,35 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net4.5;netstandard2.0</TargetFrameworks>
+    <RootNamespace>H.Utilities</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <Version>1.0.0</Version>
-    <PackageReleaseNotes></PackageReleaseNotes>
-    <Description>Description</Description>
-    <PackageTags></PackageTags>
+    <Version>1.0.4</Version>
+    <PackageReleaseNotes>Fixed bug with inverse rectangles.</PackageReleaseNotes>
+    <Description>Allows you to screenshot a screen or a portion of the screen. Features:
+- Supports multiple displays with different scales
+- Thread-safe
+
+Utilities:
+- Screenshoter.GetPhysicalScreens() // returns all screens rectangles.
+- Screenshoter.GetPhysicalScreenRectangle() // returns global screen rectangle.
+    </Description>
+    <PackageTags>screenshot</PackageTags>
   </PropertyGroup>
+
+  <PropertyGroup Label="Analyzers">
+    <NoWarn>$(NoWarn);CA5392</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <PackageReference Include="System.Drawing.Common" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="PInvoke.Gdi32" Version="0.7.78" />
+    <PackageReference Include="PInvoke.User32" Version="0.7.78" />
+  </ItemGroup>
 
 </Project>

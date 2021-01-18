@@ -18,7 +18,19 @@ Install-Package H.Screenshoter
 ### Usage
 
 ```cs
-// code
+using H.Utilities;
+
+var bitmap = Screenshoter.Shot();
+var bitmap = await Screenshoter.ShotAsync();
+
+// Rectangle in physical screen coordinates(Without DPI).
+// The transmitted coordinates will select the first screen of three HD monitors, 
+// where the second is specified as primary.
+var bitmap = Screenshoter.Shot(Rectangle.FromLTRB(-1920, 0, 0, 1080));
+
+// Helper methods
+Screenshoter.GetPhysicalScreens() // returns all screens rectangles.
+Screenshoter.GetPhysicalScreenRectangle() // returns global screen rectangle.
 ```
 
 ### Contacts
